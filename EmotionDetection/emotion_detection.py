@@ -1,12 +1,16 @@
 import requests
 import json
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def emotion_detector(text_to_analyze):
     # La URL base que me pasaste + el endpoint de análisis
-    url = "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/7d2350d8-16f0-4cb6-a236-e7da9282c6a5/v1/analyze?version=2022-04-07"
+    url = os.getenv("WATSON_URL")
     
     # Reemplaza 'TU_API_KEY_AQUI' con la clave que te dio IBM
-    api_key = "D3ypmjpuF9XG-0o3ANGPXT-OTQTF60Hg8rg99nLanm7J"
+    api_key = os.getenv("WATSON_API_KEY")
     
     # Estructura de datos que pide IBM Watson Natural Language Understanding
     header = {"Content-Type": "application/json"}
