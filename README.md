@@ -39,4 +39,4 @@ Inicia el servidor local de FastAPI con el siguiente comando:
 uvicorn server:app --reload
 ```
 
-Finalmente, abre tu navegador y ve a: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+    Finalmente, abre tu navegador y ve a: [http://127.0.0.1:8000](http://127.0.0.1:8000)
