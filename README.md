@@ -35,6 +35,7 @@ Edita el archivo `EmotionDetection/emotion_detection.py` y coloca tu propia **AP
 Inicia el servidor local de FastAPI con el siguiente comando:
 
 ```bash
-uvicorn server:app --reload```
+uvicorn server:app --reload
+```
 
 Finalmente, abre tu navegador y ve a: [http://127.0.0.1:8000](http://127.0.0.1:8000)
