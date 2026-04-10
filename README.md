@@ -25,7 +25,7 @@ Esto asegura que las librerías del proyecto no interfieran con otras aplicacion
 Una vez activado el entorno, instala automáticamente FastAPI, Requests y Uvicorn:
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt```
 
 4. **Configurar la API Key**
 Debes tener una instancia de **Natural Language Understanding** en IBM Cloud. 
@@ -35,6 +35,6 @@ Edita el archivo `EmotionDetection/emotion_detection.py` y coloca tu propia **AP
 Inicia el servidor local de FastAPI con el siguiente comando:
 
 ```bash
-uvicorn server:app --reload
+uvicorn server:app --reload```
 
 Finalmente, abre tu navegador y ve a: [http://127.0.0.1:8000](http://127.0.0.1:8000)
