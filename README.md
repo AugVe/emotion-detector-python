@@ -25,7 +25,8 @@ Esto asegura que las librerías del proyecto no interfieran con otras aplicacion
 Una vez activado el entorno, instala automáticamente FastAPI, Requests y Uvicorn:
 
 ```bash
-pip install -r requirements.txt```
+pip install -r requirements.txt
+```
 
 4. **Configurar la API Key**
 Debes tener una instancia de **Natural Language Understanding** en IBM Cloud. 
