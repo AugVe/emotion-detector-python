@@ -36,8 +36,7 @@ async def sent_detector(textToAnalyze: str):
     response = emotion_detector(textToAnalyze)
     
     # 2. MANEJO DE ERROR PRO: Si IBM no pudo procesarlo
-    if response.get('dominant_emotion') is None:
-        # En lugar de un return común, lanzamos una excepción de HTTP
+    if response is None or response.get('dominant_emotion') is None:
         raise HTTPException(status_code=400, detail="Invalid text! Please try again!")
 
     # 3. TU LÓGICA DE FORMATEO (Se queda igual porque tu JS la necesita)
