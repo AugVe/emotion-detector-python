@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -28,17 +28,19 @@ async def render_index_page(request: Request):
 # 4. RUTA DE ANÁLISIS: Donde el JS envía el texto
 @app.get("/emotionDetector")
 async def sent_detector(textToAnalyze: str):
+    # 1. SEGURIDAD: Validamos antes de llamar a IBM (ahorra tiempo y errores)
+    if not textToAnalyze or not textToAnalyze.strip():
+        raise HTTPException(status_code=400, detail="Invalid text! Please try again!")
+
     # Llamamos a la lógica core de IBM
     response = emotion_detector(textToAnalyze)
     
-    # Extraemos la emoción dominante
-    dominant_emotion = response['dominant_emotion']
+    # 2. MANEJO DE ERROR PRO: Si IBM no pudo procesarlo
+    if response.get('dominant_emotion') is None:
+        # En lugar de un return común, lanzamos una excepción de HTTP
+        raise HTTPException(status_code=400, detail="Invalid text! Please try again!")
 
-    # Manejo de error: si el texto era inválido o vacío
-    if dominant_emotion is None:
-        return {"result": "Invalid text! Please try again!"}
-
-    # Si todo está bien, construimos la respuesta final
+    # 3. TU LÓGICA DE FORMATEO (Se queda igual porque tu JS la necesita)
     formatted_result = (
             f"For the given sentence, the system response is:<br>"
             f"-  <b>Anger:</b> {response['anger']}<br>"
@@ -49,5 +51,4 @@ async def sent_detector(textToAnalyze: str):
             f"The dominant emotion is <b>{response['dominant_emotion'].upper()}.</b>"
         )
     
-    # Enviamos un JSON de vuelta al JavaScript
     return {"result": formatted_result}
