@@ -35,9 +35,6 @@ async def sent_detector(textToAnalyze: str):
     # Llamamos a la lógica core de IBM
     response = emotion_detector(textToAnalyze)
 
-    print(f"DEBUG: Texto enviado -> {textToAnalyze}")
-    print(f"DEBUG: Respuesta de la función emotion_detector -> {response}")
-
     # 2. MANEJO DE ERROR PRO: Si IBM no pudo procesarlo
     if response is None or response.get('dominant_emotion') is None:
         raise HTTPException(status_code=400, detail="Invalid text! Please try again!")
