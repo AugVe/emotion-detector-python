@@ -10,6 +10,10 @@ def emotion_detector(text_to_analyze):
     # Reemplaza 'TU_API_KEY_AQUI' con la clave que te dio IBM
     api_key = os.getenv("WATSON_API_KEY")
     
+    # Limpiamos cualquier barra al final y agregamos el endpoint exacto
+    base_url = url.rstrip('/')
+    full_url = f"{base_url}/v1/analyze?version=2022-04-07"
+
     # Estructura de datos que pide IBM Watson Natural Language Understanding
     header = {"Content-Type": "application/json"}
     payload = {
@@ -21,7 +25,7 @@ def emotion_detector(text_to_analyze):
     
     
     try:
-            response = requests.post(url, json=payload, headers=header, auth=('apikey', api_key))
+            response = requests.post(full_url, json=payload, headers=header, auth=('apikey', api_key))
             
             if response.status_code == 200:
                 full_response = response.json()
