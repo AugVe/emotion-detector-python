@@ -34,12 +34,12 @@ This is the easiest way to get the app running without worrying about local depe
 2. **Run the container**
 Pass your IBM credentials as environment variables to securely connect the application with the Watson API:
 
-```bash
-docker run -p 8000:8000 \
+   ```bash
+     docker run -p 8000:8000 \
   -e WATSON_URL="your_watson_url" \
   -e WATSON_API_KEY="your_api_key" \
   emotion-detector
-  ```
+   ```
 
 3. **Access the application:**
    Open your browser and navigate to: [http://localhost:8000](http://localhost:8000)
@@ -80,9 +80,9 @@ If you prefer to run the application locally without Docker, follow these steps:
 ## 🧪 Running Tests
 To execute the unit tests and verify the logic, run the following command in your terminal:
 
-```bash
-python3 test_emotion_detection.py
-```
+   ```bash
+   python3 test_emotion_detection.py
+   ```
 
 ## ☁️ Deployment
 This project is pre-configured for **Render** using the provided `Dockerfile`.
