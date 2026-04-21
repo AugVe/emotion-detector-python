@@ -35,10 +35,10 @@ This is the easiest way to get the app running without worrying about local depe
 Pass your IBM credentials as environment variables to securely connect the application with the Watson API:
 
    ```bash
-     docker run -p 8000:8000 \
-  -e WATSON_URL="your_watson_url" \
-  -e WATSON_API_KEY="your_api_key" \
-  emotion-detector
+   docker run -p 8000:8000 \
+   -e WATSON_URL="your_watson_url" \
+   -e WATSON_API_KEY="your_api_key" \
+   emotion-detector
    ```
 
 3. **Access the application:**
