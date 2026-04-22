@@ -1,0 +1,40 @@
+name: CI Emotion Detector Pipeline
+
+# This workflow triggers on pushes and pull requests to the main branch
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-logic:
+    # Use the latest Ubuntu runner provided by GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone the repository to the runner's workspace
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # Step 2: Initialize the Python environment (matching Docker's version)
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Step 3: Install all project dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run automated unit tests
+      # Note: We use placeholder environment variables for now. 
+      # This step is expected to fail if the tests require real API access.
+      - name: Run unit tests
+        env:
+          WATSON_URL: "https://api-placeholder.ibm.com"
+          WATSON_API_KEY: "fake-api-key-for-ci"
+        run: |
+          python -m unittest test_emotion_detection.py
