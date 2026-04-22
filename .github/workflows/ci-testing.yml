@@ -29,12 +29,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Run automated unit tests
-      # Note: We use placeholder environment variables for now. 
-      # This step is expected to fail if the tests require real API access.
+      # Step 4: Run automated unit tests using GitHub Secrets
       - name: Run unit tests
         env:
-          WATSON_URL: "https://api-placeholder.ibm.com"
-          WATSON_API_KEY: "fake-api-key-for-ci"
+          WATSON_URL: ${{ secrets.WATSON_URL }}
+          WATSON_API_KEY: ${{ secrets.WATSON_API_KEY }}
         run: |
           python -m unittest test_emotion_detection.py
