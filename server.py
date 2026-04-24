@@ -3,6 +3,8 @@ Main FastAPI server for the Emotion Detector application.
 Handles web routing and coordinates between the UI and the IBM Watson logic.
 """
 
+import uvicorn
+import os
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -62,3 +64,18 @@ async def analyze_emotion(textToAnalyze: str):
     )
     
     return {"result": formatted_result}
+
+if __name__ == "__main__":
+    """
+    Main entry point for the application.
+    Configures the server to run on a globally accessible host 
+    and handles dynamic port assignment for cloud deployment.
+    """
+    
+    # Retrieve the port from the environment variable 'PORT' (provided by Render)
+    # Default to 8000 if the variable is not set (e.g., during local development)
+    port = int(os.environ.get("PORT", 8000))
+    
+    # Start the Uvicorn server
+    # 'host="0.0.0.0"' ensures the application is reachable from outside the container
+    uvicorn.run(app, host="0.0.0.0", port=port)
