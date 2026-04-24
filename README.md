@@ -1,6 +1,6 @@
 # AI Emotion Detector 🤖🧠
 
-![CI Pipeline](https://github.com/AugVe/emotion-detector-python/actions/workflows/main.yml/badge.svg)
+![CI Pipeline](https://github.com/AugVe/emotion-detector-python/actions/workflows/ci-testing.yml/badge.svg)
 
 A professional web application that leverages Artificial Intelligence (IBM Watson Natural Language Understanding) to analyze emotional content in text. Built with a modern microservice-oriented architecture, fully containerized, and ready for cloud deployment.
 
