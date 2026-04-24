@@ -1,27 +1,32 @@
-# Use an official lightweight Python runtime as a parent image
-FROM python:3.11-slim
+# STAGE 1: Builder
+# We use a full python image to have all the necessary tools to compile dependencies
+FROM python:3.11 AS builder
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies if needed (none required for this specific project, 
-# but good to keep the structure clean)
-# Set environment variables to prevent Python from writing .pyc files and buffering stdout
+# Prevent Python from writing .pyc files and enable unbuffered logging
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Copy only the requirements file first to leverage Docker cache
+# Install dependencies in a separate step to leverage Docker cache
 COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
+# STAGE 2: Runtime
+# We use a much smaller 'slim' image for the final container
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy only the installed libraries from the builder stage
+COPY --from=builder /install /usr/local
+
+# Copy the application source code
 COPY . .
 
-# Inform Docker that the container listens on the specified port at runtime
+# Expose the port the app runs on
 EXPOSE 8000
 
-# Run the application using uvicorn
-# We use 0.0.0.0 to allow external access (essential for cloud deployment)
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
+# Set the command to run the application
+CMD ["python", "server.py"]
