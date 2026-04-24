@@ -1,5 +1,7 @@
 # AI Emotion Detector 🤖🧠
 
+![CI Pipeline](https://github.com/AugVe/emotion-detector-python/actions/workflows/main.yml/badge.svg)
+
 A professional web application that leverages Artificial Intelligence (IBM Watson Natural Language Understanding) to analyze emotional content in text. Built with a modern microservice-oriented architecture, fully containerized, and ready for cloud deployment.
 
 ## ✨ Key Features
@@ -50,7 +52,7 @@ If you prefer to run the application locally without Docker, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/AugVe/emotion-detector-python.git](https://github.com/AugVe/emotion-detector-python.git)
+   git clone https://github.com/AugVe/emotion-detector-python.git
    cd emotion-detector-python
    ```
 
@@ -77,20 +79,19 @@ If you prefer to run the application locally without Docker, follow these steps:
    uvicorn server:app --reload
    ```
 
-## 🧪 Running Tests
-To execute the unit tests and verify the logic, run the following command in your terminal:
+## 🧪 Testing & Quality Assurance
 
-   ```bash
-   python3 test_emotion_detection.py
-   ```
+- **Automated Tests:** GitHub Actions runs the test suite (`test_emotion_detection.py`) automatically on every pull request and push to `main`.
+- **Manual Testing:** Run `python3 test_emotion_detection.py` locally.
+- **Performance:** Stress-tested using **Apache Benchmark** to verify concurrency handling and response stability.
 
-## ☁️ Deployment
-This project is pre-configured for **Render** using the provided `Dockerfile`.
+## ☁️ Deployment & Monitoring
 
-1. **Connect** your GitHub repository to Render.
-2. **Select** "Web Service" and choose **Docker** as the runtime.
-3. **Add** `WATSON_URL` and `WATSON_API_KEY` in the **Environment Variables** settings.
-4. **Deploy!** Render will automatically build the image and start the service.
+This project is pre-configured for **Render** with a production-ready setup:
+
+- **Runtime:** Docker (Multi-stage build).
+- **Health Monitoring:** Service status is monitored in real-time via the `/health` endpoint.
+- **Environment Management:** API keys are securely injected via **Render's Environment Variables**, ensuring that sensitive credentials never touch the codebase.
 
 ---
 *Developed as part of a professional portfolio to demonstrate full-stack AI integration and DevOps practices.*
