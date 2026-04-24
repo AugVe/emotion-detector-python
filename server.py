@@ -65,6 +65,14 @@ async def analyze_emotion(textToAnalyze: str):
     
     return {"result": formatted_result}
 
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint to verify that the server is running correctly.
+    Used by the cloud provider to monitor application stability.
+    """
+    return {"status": "ok"}
+
 if __name__ == "__main__":
     """
     Main entry point for the application.
