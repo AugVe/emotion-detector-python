@@ -8,7 +8,7 @@ import os
 import logging
 import sys
 from fastapi import FastAPI, Request, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
@@ -23,13 +23,35 @@ logging.basicConfig(
 )
 logger = logging.getLogger("emotion-detector-server")
 
-# --- SCHEMAS (Pydantic Models) ---
+# --- CUSTOM EXCEPTIONS (The Hierarchy) ---
+
+class EmotionAppError(Exception):
+    """Base class for all exceptions in this application."""
+    def __init__(self, message: str, status_code: int = 400):
+        self.message = message
+        self.status_code = status_code
+        super().__init__(self.message)
+
+class WatsonServiceError(EmotionAppError):
+    """Raised when the external IBM Watson API fails."""
+    pass
+
+class InvalidInputError(EmotionAppError):
+    """Raised when the user provides invalid text."""
+    pass
+
+# --- SCHEMAS  ---
 class AnalysisResponse(BaseModel):
     """Schema for the successful emotion analysis response."""
     result: str = Field(
         ..., 
         example="For the given sentence, the system response is: Anger: 0.1, ... The dominant emotion is JOY."
     )
+
+class ErrorResponse(BaseModel):
+    """Standardized error response format."""
+    detail: str
+    status: str = "error"
 
 # --- APP INSTANCE ---
 app = FastAPI(
@@ -47,6 +69,20 @@ app = FastAPI(
         "url": "https://github.com/AugVe",
     }
 )
+
+# --- GLOBAL EXCEPTION HANDLER ---
+
+@app.exception_handler(EmotionAppError)
+async def emotion_app_exception_handler(request: Request, exc: EmotionAppError):
+    """
+    Catches any EmotionAppError (or its children) raised anywhere in the app.
+    Logs the incident and returns a standardized JSON response.
+    """
+    logger.error(f"Application Error: {exc.message}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.message, "status": "error"}
+    )
 
 # Configure static files (JS, CSS) and template directory (HTML)
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -79,28 +115,17 @@ async def analyze_emotion(
     # Validation: Check for empty or whitespace-only strings
     if not textToAnalyze or not textToAnalyze.strip():
         logger.warning("Empty text provided for analysis.")
-        raise HTTPException(
-            status_code=400, 
-            detail="Invalid text! Please try again!"
-        )
+        raise InvalidInputError("Invalid text! Please try again!")
 
     # Invoke the IBM Watson analysis logic
-    try:
-        response = emotion_detector(textToAnalyze)
-    except Exception as e:
-        logger.error(f"External API Error: {str(e)}")
-        raise HTTPException(
-            status_code=500, 
-            detail="Internal error during AI processing."
-        )
+    
+    response = emotion_detector(textToAnalyze)
+
 
     # Error Handling: Verify if the external API returned a valid result
     if response is None or response.get('dominant_emotion') is None:
         logger.error("AI model returned an invalid or null response.")
-        raise HTTPException(
-            status_code=400, 
-            detail="Invalid text! Please try again!"
-        )
+        raise WatsonServiceError("Invalid text! Please try again!", status_code=400)
 
     # Prepare the formatted output string for the UI
     formatted_result = (
