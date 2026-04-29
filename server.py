@@ -44,8 +44,8 @@ class InvalidInputError(EmotionAppError):
 class AnalysisResponse(BaseModel):
     """Schema for the successful emotion analysis response."""
     result: str = Field(
-        ..., 
-        example="For the given sentence, the system response is: Anger: 0.1, ... The dominant emotion is JOY."
+        ...,
+        json_schema_extra={"example": "For the given sentence, the system response is: Anger: 0.1, ... The dominant emotion is JOY."}
     )
 
 class ErrorResponse(BaseModel):
