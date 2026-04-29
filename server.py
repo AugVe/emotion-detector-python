@@ -49,20 +49,26 @@ class AnalysisResponse(BaseModel):
     )
 
 class ErrorResponse(BaseModel):
-    """Standardized error response format."""
-    detail: str
-    status: str = "error"
+    """Standardized error response format for documentation."""
+    detail: str = Field(..., json_schema_extra={"example": "Invalid text! Please try again!"})
+    status: str = Field("error", json_schema_extra={"example": "error"})
 
 # --- APP INSTANCE ---
+description = """
+### Professional API for text emotion analysis. 🤖
+
+This service leverages **IBM Watson NLP** to extract emotional nuances from text strings. 
+It provides scores for five core emotions and identifies the overall dominant sentiment.
+
+#### Key Features:
+* **Deep Analysis:** Detailed scores for Joy, Sadness, Anger, Fear, and Disgust.
+* **Robustness:** Global exception handling for predictable API behavior.
+* **Monitoring:** Built-in health checks for cloud stability.
+"""
+
 app = FastAPI(
-    title="Emotion Detector API 🤖",
-    description="""
-    Professional API for text emotion analysis using IBM Watson.
-    
-    * **Reliable:** Built-in error handling and logging.
-    * **Documented:** Fully compliant with OpenAPI/Swagger standards.
-    * **Optimized:** Lightweight container-ready architecture.
-    """,
+    title="Emotion Detector API",
+    description = description,
     version="1.1.0",
     contact={
         "name": "Augusto",
@@ -101,14 +107,25 @@ async def render_home_page(request: Request):
 @app.get(
     "/emotionDetector", 
     response_model=AnalysisResponse, 
-    tags=["Analysis"]
+    tags=["Analysis"],
+    responses={
+        200: {"model": AnalysisResponse, "description": "Successful Emotion Analysis"},
+        400: {"model": ErrorResponse, "description": "Invalid input or Watson service failure"},
+        500: {"description": "Unexpected Server Error"}
+    }
 )
 async def analyze_emotion(
-    textToAnalyze: str = Query(..., description="The text string to be analyzed by the AI model")
+    textToAnalyze: str = Query(
+        ..., 
+        description="The text string to be analyzed",
+        min_length=1,
+        json_schema_extra={"example": "I am so happy today!"}
+    )
 ):
     """
-    Endpoint that receives text, triggers the emotion analysis,
-    and returns a formatted HTML response for the frontend.
+    ## Analyze Text Emotion
+    Submit a text string to receive a detailed breakdown of its emotional content.
+    The response is formatted with HTML tags for direct frontend rendering.
     """
     logger.info(f"Received analysis request for text: '{textToAnalyze[:30]}...'")
 
@@ -141,7 +158,12 @@ async def analyze_emotion(
     logger.info(f"Analysis successful. Dominant emotion: {response['dominant_emotion']}")
     return {"result": formatted_result}
 
-@app.get("/health", tags=["Maintenance"])
+@app.get(
+    "/health", 
+    tags=["Maintenance"],
+    summary="Check API Health Status",
+    description="Returns 'ok' if the server is healthy and reachable."
+)
 async def health_check():
     """
     Health check endpoint to verify that the server is running correctly.
