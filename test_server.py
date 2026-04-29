@@ -44,14 +44,13 @@ def test_emotion_detector_empty_input():
     """
     response = client.get("/emotionDetector?textToAnalyze=")
     
-    assert response.status_code == 400
-    assert response.json()["status"] == "error"
-    assert "Invalid text" in response.json()["detail"]
+    assert response.status_code == 422
+    assert "detail" in response.json()
 
 def test_emotion_detector_whitespace_only():
     """
     Ensure that inputs consisting only of whitespace characters are rejected.
-    Confirms that the validation logic properly cleans and checks the input.
+    This still hits our manual 400 error because strip() happens inside our code.
     """
     response = client.get("/emotionDetector?textToAnalyze=%20%20%20")
     
