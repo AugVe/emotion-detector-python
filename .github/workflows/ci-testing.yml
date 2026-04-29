@@ -30,9 +30,9 @@ jobs:
           pip install -r requirements.txt
 
       # Step 4: Run automated unit tests using GitHub Secrets
-      - name: Run unit tests
+      - name: Run all tests with Pytest
         env:
           WATSON_URL: ${{ secrets.WATSON_URL }}
           WATSON_API_KEY: ${{ secrets.WATSON_API_KEY }}
         run: |
-          python -m unittest test_emotion_detection.py
+          pytest
