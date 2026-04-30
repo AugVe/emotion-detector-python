@@ -190,8 +190,8 @@ async def analyze_emotion(
         f"-  <b>Fear:</b> {response['fear']}<br>"
         f"-  <b>Joy:</b> {response['joy']}<br>"
         f"-  <b>Sadness:</b> {response['sadness']}<br><br>"
-        f"The dominant emotion is"
-        "<b>{response['dominant_emotion'].upper()}.</b>"
+        f"The dominant emotion is "
+        f"<b>{response['dominant_emotion'].upper()}.</b>"
     )
 
     logger.info(
