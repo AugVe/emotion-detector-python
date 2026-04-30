@@ -3,30 +3,38 @@ import requests
 from typing import Dict, Any, Optional
 
 
+# --- CONSTANTS ---
+WATSON_VERSION = "2022-04-07"
+
+
 def emotion_detector(text_to_analyze: str) -> Optional[Dict[str, Any]]:
     """
-    Analyzes the emotional content of the provided text using IBM Watson
-    Natural Language Understanding API.
+    Analyzes the emotional content of text using IBM Watson NLP API.
 
     Args:
         text_to_analyze (str): The input text to be processed.
 
     Returns:
-        Optional[Dict[str, Any]]: A dictionary containing emotion
-        scores and the dominant emotion, or None if the request fails.
+        Optional[Dict[str, Any]]: A dictionary with the following structure:
+            {
+                'anger': float, 'disgust': float, 'fear': float,
+                'joy': float, 'sadness': float, 'dominant_emotion': str
+            }
+            Returns None if the request fails or URL/API Key are missing.
     """
 
     # Retrieve environment variables
     url = os.getenv("WATSON_URL")
     api_key = os.getenv("WATSON_API_KEY")
 
-    # Ensure URL is properly formatted with the required version parameter
-    if not url:
+    # Ensure both URL and API key are available before proceeding
+    if not url or not api_key:
         return None
 
+    # Format the URL and ensure the required version parameter is included
     base_url = url.rstrip('/')
     if "/v1/analyze" not in base_url:
-        full_url = f"{base_url}/v1/analyze?version=2022-04-07"
+        full_url = f"{base_url}/v1/analyze?version={WATSON_VERSION}"
     else:
         full_url = base_url
 
