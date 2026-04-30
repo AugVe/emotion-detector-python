@@ -1,18 +1,20 @@
-"""
-Unit tests for the Emotion Detection logic.
-Ensures that the IBM Watson API integration correctly identifies 
-dominant emotions across different scenarios.
-"""
-
-"""
-Unit tests for the Emotion Detection logic.
-Ensures that the IBM Watson API integration correctly identifies 
-dominant emotions across different scenarios.
-"""
-
 import unittest
 from unittest.mock import patch
 from EmotionDetection import emotion_detection
+
+
+"""
+Unit tests for the Emotion Detection logic.
+Ensures that the IBM Watson API integration correctly identifies
+dominant emotions across different scenarios.
+"""
+
+"""
+Unit tests for the Emotion Detection logic.
+Ensures that the IBM Watson API integration correctly identifies
+dominant emotions across different scenarios.
+"""
+
 
 class TestEmotionDetection(unittest.TestCase):
     """
@@ -32,7 +34,9 @@ class TestEmotionDetection(unittest.TestCase):
 
         # Case 2: Anger
         mock_detector.return_value = {'dominant_emotion': 'anger'}
-        result = emotion_detection.emotion_detector("I am really mad about this")
+        result = emotion_detection.emotion_detector(
+            "I am really mad about this"
+        )
         self.assertEqual(result['dominant_emotion'], 'anger')
 
     @patch("EmotionDetection.emotion_detection.emotion_detector")
@@ -43,6 +47,7 @@ class TestEmotionDetection(unittest.TestCase):
         mock_detector.return_value = None
         result = emotion_detection.emotion_detector("")
         self.assertIsNone(result)
+
 
 if __name__ == '__main__':
     unittest.main()
