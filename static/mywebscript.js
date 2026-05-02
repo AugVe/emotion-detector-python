@@ -37,12 +37,21 @@ const runSentimentAnalysis = () => {
             return response.json(); // Parse the JSON response body
         })
         .then(data => {
-            // Make the response container visible and inject the result
+            // Make the response container visible
             responseDiv.classList.remove("hidden");
-            responseDiv.innerHTML = data.result;
+            
+            // Log the data for debugging purposes in the browser console
+            console.log("Server response data:", data);
+
+            /**
+             * Extract the result from the JSON. 
+             * It tries to find 'result' or 'response', otherwise stringifies the object.
+             */
+            const output = data.result || data.response || JSON.stringify(data);
+            responseDiv.innerHTML = output;
             
             // Apply a professional success style using Tailwind classes
-            responseDiv.className = "mt-6 p-6 rounded-xl bg-white shadow-sm border-t-4 border-blue-500 text-gray-700 leading-relaxed";
+            responseDiv.className = "mt-6 p-6 rounded-xl bg-white shadow-sm border-t-4 border-blue-500 text-gray-700 leading-relaxed font-medium";
         })
         .catch(error => {
             // Ensure loader is hidden and show error message to the user
