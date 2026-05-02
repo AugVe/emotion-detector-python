@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Emotion Detector</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="{{ url_for('static', path='/mywebscript.js') }}"></script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline';">
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-4">
     <header class="text-center mb-8">
@@ -36,5 +35,7 @@
     <footer class="mt-12 text-gray-400">
         <p><small>Powered by IBM Watson Natural Language Understanding</small></p>
     </footer>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{{ url_for('static', path='/mywebscript.js') }}"></script>
 </body>
 </html>
