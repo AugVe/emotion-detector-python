@@ -1,15 +1,18 @@
 /**
  * Executes the emotion analysis by sending the user input to the backend.
- * Updates the UI with the formatted response from the server and manages
- * loading states and visibility.
+ * This version uses a standard function declaration to ensure global 
+ * scope availability for the HTML onclick event.
  */
-const runSentimentAnalysis = () => {
-    // Retrieve DOM elements for input, response, and loader
+function runSentimentAnalysis() {
+    // Log to confirm the function is being called
+    console.log("Function runSentimentAnalysis triggered!");
+
+    // Retrieve DOM elements
     const textToAnalyze = document.getElementById("textToAnalyze").value;
     const responseDiv = document.getElementById("system_response");
     const loader = document.getElementById("loader");
 
-    // Check if the input is empty or just whitespace before making the request
+    // Validation: Check if input is empty or just whitespace
     if (!textToAnalyze.trim()) {
         responseDiv.classList.remove("hidden");
         responseDiv.innerHTML = "Please enter some text to analyze.";
@@ -17,44 +20,40 @@ const runSentimentAnalysis = () => {
         return;
     }
 
-    // Prepare the UI: Show loader and hide any previous response
+    // UI Setup: Show loading spinner and hide previous results
     responseDiv.classList.add("hidden");
     loader.classList.remove("hidden");
 
-    // Initiate an asynchronous GET request to the emotionDetector endpoint
-    // encodeURIComponent ensures special characters are handled correctly in the URL
+    // Perform the asynchronous request to the FastAPI backend
     fetch(`/emotionDetector?textToAnalyze=${encodeURIComponent(textToAnalyze)}`)
         .then(response => {
-            // Hide the loader as the server has responded
+            // Hide loader as soon as the server responds
             loader.classList.add("hidden");
             
-            // Check if the HTTP response status is successful (200-299)
             if (!response.ok) {
+                // If the server returns an error, parse the error message
                 return response.json().then(err => { 
                     throw new Error(err.detail || 'Server error'); 
                 });
             }
-            return response.json(); // Parse the JSON response body
+            return response.json();
         })
         .then(data => {
             // Make the response container visible
             responseDiv.classList.remove("hidden");
             
-            // Log the data for debugging purposes in the browser console
-            console.log("Server response data:", data);
+            // Log raw data to the console for debugging
+            console.log("Server response received:", data);
 
-            /**
-             * Extract the result from the JSON. 
-             * It tries to find 'result' or 'response', otherwise stringifies the object.
-             */
+            // Determine which field contains the result string
             const output = data.result || data.response || JSON.stringify(data);
-            responseDiv.innerHTML = output;
             
-            // Apply a professional success style using Tailwind classes
+            // Update the UI with the result and success styling
+            responseDiv.innerHTML = output;
             responseDiv.className = "mt-6 p-6 rounded-xl bg-white shadow-sm border-t-4 border-blue-500 text-gray-700 leading-relaxed font-medium";
         })
         .catch(error => {
-            // Ensure loader is hidden and show error message to the user
+            // Ensure loader is hidden and show the error in the UI
             loader.classList.add("hidden");
             responseDiv.classList.remove("hidden");
             
@@ -62,4 +61,11 @@ const runSentimentAnalysis = () => {
             responseDiv.innerHTML = `⚠️ Error: ${error.message}`;
             responseDiv.className = "mt-6 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200";
         });
-};
+}
+
+/**
+ * Explicitly attach the function to the window object.
+ * This acts as a fallback for strict environments (like SES) 
+ * that might prevent automatic global function registration.
+ */
+window.runSentimentAnalysis = runSentimentAnalysis;
