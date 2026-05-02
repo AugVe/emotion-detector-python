@@ -13,6 +13,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 from EmotionDetection.emotion_detection import emotion_detector
+import mimetypes
+
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
 
 # --- LOGGING CONFIGURATION ---
 # Configure logging to output to stdout (visible in Docker/Render logs)

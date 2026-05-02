@@ -1,18 +1,13 @@
 /**
- * Executes the emotion analysis by sending the user input to the backend.
- * This version uses a standard function declaration to ensure global 
- * scope availability for the HTML onclick event.
+ * Main function to perform emotion analysis.
+ * It gathers input, shows a loader, and communicates with the FastAPI backend.
  */
 function runSentimentAnalysis() {
-    // Log to confirm the function is being called
-    console.log("Function runSentimentAnalysis triggered!");
-
-    // Retrieve DOM elements
     const textToAnalyze = document.getElementById("textToAnalyze").value;
     const responseDiv = document.getElementById("system_response");
     const loader = document.getElementById("loader");
 
-    // Validation: Check if input is empty or just whitespace
+    // 1. Validation: Prevent empty submissions
     if (!textToAnalyze.trim()) {
         responseDiv.classList.remove("hidden");
         responseDiv.innerHTML = "Please enter some text to analyze.";
@@ -20,18 +15,15 @@ function runSentimentAnalysis() {
         return;
     }
 
-    // UI Setup: Show loading spinner and hide previous results
+    // 2. UI Reset: Show loader and hide previous responses
     responseDiv.classList.add("hidden");
     loader.classList.remove("hidden");
 
-    // Perform the asynchronous request to the FastAPI backend
+    // 3. API Call: Fetch data from the endpoint
     fetch(`/emotionDetector?textToAnalyze=${encodeURIComponent(textToAnalyze)}`)
         .then(response => {
-            // Hide loader as soon as the server responds
             loader.classList.add("hidden");
-            
             if (!response.ok) {
-                // If the server returns an error, parse the error message
                 return response.json().then(err => { 
                     throw new Error(err.detail || 'Server error'); 
                 });
@@ -39,33 +31,40 @@ function runSentimentAnalysis() {
             return response.json();
         })
         .then(data => {
-            // Make the response container visible
             responseDiv.classList.remove("hidden");
             
-            // Log raw data to the console for debugging
-            console.log("Server response received:", data);
+            // Log for debugging (Check Docker logs/Browser console)
+            console.log("Analysis successful:", data);
 
-            // Determine which field contains the result string
+            // Handle different possible response structures
             const output = data.result || data.response || JSON.stringify(data);
             
-            // Update the UI with the result and success styling
             responseDiv.innerHTML = output;
+            // Apply professional card styling with a blue top accent
             responseDiv.className = "mt-6 p-6 rounded-xl bg-white shadow-sm border-t-4 border-blue-500 text-gray-700 leading-relaxed font-medium";
         })
         .catch(error => {
-            // Ensure loader is hidden and show the error in the UI
             loader.classList.add("hidden");
             responseDiv.classList.remove("hidden");
-            
             console.error('Analysis Error:', error);
+            
             responseDiv.innerHTML = `⚠️ Error: ${error.message}`;
             responseDiv.className = "mt-6 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200";
         });
 }
 
 /**
- * Explicitly attach the function to the window object.
- * This acts as a fallback for strict environments (like SES) 
- * that might prevent automatic global function registration.
+ * DEPLOYMENT FIX:
+ * Attaches the event listener once the DOM is fully loaded.
+ * This approach is mandatory for environments with strict CSP (Content Security Policy)
+ * or SES (Secure ECMAScript) like Docker-based Render deployments.
  */
-window.runSentimentAnalysis = runSentimentAnalysis;
+document.addEventListener('DOMContentLoaded', () => {
+    const analyzeBtn = document.getElementById('analyzeButton');
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', runSentimentAnalysis);
+        console.log("Success: Button listener attached via addEventListener.");
+    } else {
+        console.error("Error: analyzeButton not found in the DOM.");
+    }
+});
