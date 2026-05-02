@@ -4,38 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Emotion Detector</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline';">
+    
+    <!-- 
+        CONTENT SECURITY POLICY (CSP):
+        Strict policy that allows local scripts and static styles. 
+        By removing the Tailwind JS CDN, we no longer need 'unsafe-eval'.
+    -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' 'unsafe-inline'; 
+                   style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; 
+                   font-src 'self';">
+
+    <!-- 
+        TAILWIND CSS (Static Version):
+        Loading the minified CSS directly from a CDN. 
+        This avoids using the JavaScript-based 'Play CDN' which causes security blocks in Docker.
+    -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Header Section -->
     <header class="text-center mb-8">
         <h1 class="text-4xl font-bold text-gray-900 mb-2">AI Emotion Detector 🤖</h1>
         <p class="text-gray-600">Enter the text you wish to analyze for emotional content:</p>
     </header>
 
+    <!-- Main Content Card -->
     <main class="w-full max-w-2xl bg-white rounded-xl shadow-md p-6">
+        <!-- Input Area -->
         <textarea id="textToAnalyze" 
                   class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   rows="4" 
                   placeholder="Type your text here..."></textarea>
         
+        <!-- Action Button -->
         <div class="mt-4 flex flex-col items-center">
             <button id="analyzeButton" 
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded-full transition-colors duration-200">
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded-full transition-colors duration-200 focus:outline-none">
                 Analyze Text
             </button>
         </div>
 
+        <!-- Loading Indicator -->
         <div id="loader" class="hidden mt-6 text-center text-blue-600 font-medium">
             Analyzing emotions...
         </div>
         
+        <!-- Result Container -->
         <div id="system_response" class="mt-6 p-4 rounded-lg border border-gray-100 hidden"></div>
     </main>
 
+    <!-- Footer -->
     <footer class="mt-12 text-gray-400">
         <p><small>Powered by IBM Watson Natural Language Understanding</small></p>
     </footer>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 
+        APPLICATION LOGIC:
+        Loading the script at the end to ensure the DOM is ready.
+        Requires the 'DOMContentLoaded' event listener in mywebscript.js to work in Docker.
+    -->
     <script src="{{ url_for('static', path='/mywebscript.js') }}"></script>
 </body>
 </html>
