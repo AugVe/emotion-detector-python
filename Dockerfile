@@ -26,7 +26,7 @@ COPY --from=builder /install /usr/local
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 8000
+EXPOSE 10000
 
 # Set the command to run the application
 CMD ["python", "server.py"]
