@@ -81,8 +81,8 @@ If you prefer to run the application locally without Docker, follow these steps:
 
 ## 🧪 Testing & Quality Assurance
 
-- **Automated Tests:** GitHub Actions runs the test suite (`test_emotion_detection.py`) automatically on every pull request and push to `main`.
-- **Manual Testing:** Run `python3 test_emotion_detection.py` locally.
+- **Automated Tests:** GitHub Actions runs the **full test suite** (`test_emotion_detection.py` and `test_server.py`) automatically on every pull request and push to `main`.
+- **Manual Testing:** Run all tests locally using `pytest` to ensure both the IBM Watson logic and the FastAPI endpoints are functioning correctly.
 - **Performance:** Stress-tested using **Apache Benchmark** to verify concurrency handling and response stability.
 
 ## ☁️ Deployment & Monitoring

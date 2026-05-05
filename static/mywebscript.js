@@ -32,16 +32,29 @@ function runSentimentAnalysis() {
         })
         .then(data => {
             responseDiv.classList.remove("hidden");
-            
-            // Log for debugging (Check Docker logs/Browser console)
             console.log("Analysis successful:", data);
 
-            // Handle different possible response structures
             const output = data.result || data.response || JSON.stringify(data);
-            
             responseDiv.innerHTML = output;
-            // Apply professional card styling with a blue top accent
-            responseDiv.className = "mt-6 p-6 rounded-xl bg-white shadow-sm border-t-4 border-blue-500 text-gray-700 leading-relaxed font-medium";
+
+            /**
+             * DYNAMIC UI STYLING LOGIC
+             * We apply specific Tailwind CSS classes based on the dominant emotion detected.
+             * This provides immediate visual feedback to the user.
+             */
+            
+            const baseClasses = "mt-6 p-6 rounded-xl shadow-sm border-t-4 leading-relaxed font-medium transition-all duration-500";
+
+            // Conditional styling based on detected emotional context
+            if (output.includes("JOY")) {
+                responseDiv.className = `${baseClasses} bg-green-50 border-green-500 text-green-900`;
+            } else if (output.includes("ANGER") || output.includes("FEAR")) {
+                responseDiv.className = `${baseClasses} bg-red-50 border-red-500 text-red-900`;
+            } else if (output.includes("SADNESS")) {
+                responseDiv.className = `${baseClasses} bg-gray-50 border-gray-500 text-gray-900`;
+            } else {
+                responseDiv.className = `${baseClasses} bg-blue-50 border-blue-500 text-blue-900`;
+            }
         })
         .catch(error => {
             loader.classList.add("hidden");
