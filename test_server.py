@@ -64,6 +64,22 @@ def test_emotion_detector_whitespace_only():
     assert response.json()["status"] == "error"
 
 
+def test_emotion_detector_watson_failure():
+    """
+    Test how the server handles a null or invalid response from Watson.
+    Ensures that the WatsonServiceError is correctly caught and reported.
+    """
+    # Simulating Watson returning None (invalid response)
+    with patch("server.emotion_detector") as mock_api:
+        mock_api.return_value = None 
+
+        response = client.get("/emotionDetector?textToAnalyze=Something")
+
+        assert response.status_code == 400
+        assert response.json()["status"] == "error"
+        assert "Invalid text" in response.json()["detail"]
+
+
 def test_health_check():
     """
     Validate the operational status of the application via the health endpoint.
